@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Mongo Live</title>
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" src="/js/jquery-1.4.4.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/smoothie.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/app.js" charset="utf-8"></script>
+
+    <link href="/themes/dark.css" rel="stylesheet" type="text/css" media="screen" />
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+    startServerStatusPoll('localhost', 28017);
+
+    var opcountersQueryChart = createChart('opcounters - query', 'opcounters', 'query', 'opcountersQueryChart');
+    var opcountersInsertChart = createChart('opcounters - insert', 'opcounters', 'insert', 'opcountersInsertChart');
+    
+    var opcountersUpdateChart = createChart('opcounters - update', 'opcounters', 'update', 'opcountersUpdateChart');
+    var opcountersDeleteChart = createChart('opcounters - delete', 'opcounters', 'delete', 'opcountersDeleteChart');
+
+    var opcountersCommandChart = createChart('opcounters - command', 'opcounters', 'command', 'opcountersCommandChart');
+    var opcountersGetmoreChart = createChart('opcounters - getmore', 'opcounters', 'getmore', 'opcountersGetmoreChart');
+
+    var indexCountersBtreeHitsChart = createChart('indexCounters - btree.hits', 'indexCounters', 'btree.hits', 'indexCountersBtreeHitsChart');
+    var indexCountersBtreeMissesChart = createChart('indexCounters - btree.misses', 'indexCounters', 'btree.misses', 'indexCountersBtreeMissesChart');
+
+});
+</script>
+</head>
+<body> 
+
+<!--
+Copyright 2011, Deft Labs.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at:
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<div id="header"><div id="headerContent"><div id="logo"></div></div></div>
+
+<div id="mainContainer"> 
+
+    <table id="chartContainer"> 
+    <tbody>
+    <tr> 
+        <td class="chartName">query</td>
+        <td><canvas id="opcountersQueryChart" width="300" height="120" class="chartCanvas"></canvas></td>
+
+        <td><canvas id="opcountersInsertChart" width="300" height="120"></canvas></td>
+        <td class="chartName">insert</td>
+    </tr>
+
+    <tr>
+        <td class="chartName">update</td>
+        <td><canvas id="opcountersUpdateChart" width="300" height="120"></canvas></td>
+
+        <td><canvas id="opcountersDeleteChart" width="300" height="120"></canvas></td>
+        <td class="chartName">delete</td>
+    </tr>
+
+    <tr>
+        <td class="chartName">getmore</td>
+        <td><canvas id="opcountersGetmoreChart" width="300" height="120"></canvas></td>
+
+        <td><canvas id="opcountersCommandChart" width="300" height="120"></canvas></td>
+        <td class="chartName">command</td>
+    </tr>
+
+    <tr>
+        <td class="chartName">btree.hits</td>
+        <td><canvas id="indexCountersBtreeHitsChart" width="300" height="120"></canvas></td>
+
+        <td><canvas id="indexCountersBtreeMissesChart" width="300" height="120"></canvas></td>
+        <td class="chartName">btree.misses</td>
+    </tr>
+    </tbody>
+    </table>
+</div>
+
+<div id="footer">
+    <span>Mongo Live is not associated with <a href="http://www.mongodb.org/" target="_blank">MongoDB</a>.</span>
+    <span>Released under <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License, Version 2.0</a>.</span> 
+    <span>&copy; 2011 <a href="http://deftlabs.com">Deft Labs</a></span>
+</div>
+
+</body>
+</html>
+
