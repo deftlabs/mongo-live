@@ -1,11 +1,11 @@
 {
     "name": "Mongo Live",
     "description": "An extension that allows you to view live/real-time MongoDB stats via the REST API.",
-    "version": "0.5",
+    "version": "0.5.1",
 
     "app": { "launch": { "local_path": "main.html" } },
 
-    "icons": { "16": "/images/icon_16.png", "128": "/images/icon_128.png" },
+    "icons": { "16": "icon_16.png", "48": "icon_48.png", "128": "icon_128.png" },
 
     "permissions": [ "unlimitedStorage", "notifications", "geolocation", "http://*/" ]
 }
