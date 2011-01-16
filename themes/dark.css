@@ -20,13 +20,13 @@ body { background-color: #402817; text-align: center; font-family: helvetica,ari
 
 #logo { background-image: url("/images/logo-mongoDB.png"); height: 90px; width: 217px; }
 
-#headerContent { width: 665px; margin: 0px auto; padding: 0px; padding-top: 10px; }
+#headerContent { width: 650px; margin: 0px auto; padding: 0px; padding-top: 10px; }
 
-#mainContainer { width: 900px; margin: 0px auto; padding: 0px; }
+#mainContainer { width: 100%; margin: 0px auto; padding: 0px; }
 
 #chartContainer { padding: 10px; margin: 0px auto; text-align: center; }
 
-.chartName { vertical-align: middle; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); color: #F6F4CD; }
+.chartName { vertical-align: middle; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); color: #F6F4CD;  margin: 0; padding: 0; }
 
 .title { color: #EEE;  }
 
