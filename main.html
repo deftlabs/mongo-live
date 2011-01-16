@@ -1,19 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Mongo Live</title>
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Cache-Control" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script type="text/javascript" src="/js/jquery-1.4.4.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="/js/smoothie.js" charset="utf-8"></script>
     <script type="text/javascript" src="/js/app.js" charset="utf-8"></script>
-
     <link href="/themes/dark.css" rel="stylesheet" type="text/css" media="screen" />
 
-<script type="text/javascript">
-
+<script type="text/javascript" charset="utf-8">
+<!--
 $(document).ready(function() {
     startServerStatusPoll('localhost', 28017);
 
@@ -28,8 +23,8 @@ $(document).ready(function() {
 
     var indexCountersBtreeHitsChart = createChart('indexCounters - btree.hits', 'indexCounters', 'btree.hits', 'indexCountersBtreeHitsChart');
     var indexCountersBtreeMissesChart = createChart('indexCounters - btree.misses', 'indexCounters', 'btree.misses', 'indexCountersBtreeMissesChart');
-
 });
+//-->
 </script>
 </head>
 <body> 
@@ -54,7 +49,7 @@ limitations under the License.
 
 <div id="mainContainer"> 
 
-    <table id="chartContainer"> 
+    <table id="chartContainer">
     <tbody>
     <tr> 
         <td class="chartName">query</td>
@@ -81,11 +76,11 @@ limitations under the License.
     </tr>
 
     <tr>
-        <td class="chartName">btree.hits</td>
+        <td class="chartName">hits</td>
         <td><canvas id="indexCountersBtreeHitsChart" width="300" height="120"></canvas></td>
 
         <td><canvas id="indexCountersBtreeMissesChart" width="300" height="120"></canvas></td>
-        <td class="chartName">btree.misses</td>
+        <td class="chartName">misses</td>
     </tr>
     </tbody>
     </table>
@@ -94,7 +89,7 @@ limitations under the License.
 <div id="footer">
     <span>Mongo Live is not associated with <a href="http://www.mongodb.org/" target="_blank">MongoDB</a>.</span>
     <span>Released under <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License, Version 2.0</a>.</span> 
-    <span>&copy; 2011 <a href="http://deftlabs.com">Deft Labs</a></span>
+    <span>&#169; 2011 <a href="http://deftlabs.com">Deft Labs</a></span>
 </div>
 
 </body>
