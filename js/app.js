@@ -148,8 +148,11 @@ function queryDb(commandUrl, success, failure, cmdError, notFound, serverError) 
     xhr.open("GET", commandUrl, true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            var resp = JSON.parse(xhr.responseText);
+            
+            var resp = JSON.parse(fixDateFields(xhr.responseText));
+            
             // TODO: Check for mongo error state in response json
+
             success(resp);
         } else if (xhr.readyState == 4 && xhr.status == 404) {
             notFound();
@@ -162,11 +165,25 @@ function queryDb(commandUrl, success, failure, cmdError, notFound, serverError) 
     xhr.send();
 };
 
+/**
+ * There is a date format bug in some older versions of Mongo. Thanks to Lucas for 
+ * submitting part of the regex solution :-)
+ *
+ * The regex below replaces the date fields with 0 (since they are not used).
+ *
+ * http://jira.mongodb.org/browse/SERVER-2378
+ * 
+ * The old format is:
+ * "last_finished" : Date( 1295450058854 ) 
+ * The date format in newer releases is:
+ * "localTime" : { "$date" : 1295452287356 }
+ */
+function fixDateFields(resp) { return resp.replace(/Date\( (\d+) \)/g, "0"); };
+
 function isInt(v) {
     var regex = /(^-?\d\d*$)/;
     return regex.test(v);
-}
-
+};
 
 function getPersistedItem(key) {
     var value;
