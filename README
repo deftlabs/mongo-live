@@ -10,7 +10,9 @@ This product uses/includes the following open source projects:
 
     * Smoothie Charts - http://smoothiecharts.org/ - MIT License - Copyright (c) 2010, Joe Walnes
 
-    * jQuery - http://jquery.org - MIT License or GPL V2.
+    * jQuery - http://jquery.org - MIT License or GPL v2
+
+    * DataTables - http://www.datatables.net/ - GPL v2 - Copyright (c) 2007-2011, Allan Jardine 
 
     * Images are from MongoDB: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0) 
 
