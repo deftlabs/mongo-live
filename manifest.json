@@ -9,5 +9,5 @@
     
     "background_page": "background.html",
 
-    "permissions": [ "tabs", "unlimitedStorage", "notifications", "geolocation", "http://*/" ]
+    "permissions": [ "tabs", "unlimitedStorage", "http://*/" ]
 }
