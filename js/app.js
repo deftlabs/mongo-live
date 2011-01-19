@@ -161,3 +161,21 @@ function queryDb(commandUrl, success, failure, cmdError, notFound, serverError) 
     }
     xhr.send();
 };
+
+function isInt(v) {
+    var regex = /(^-?\d\d*$)/;
+    return regex.test(v);
+}
+
+
+function getPersistedItem(key) {
+    var value;
+    try { value = window.localStorage.getItem(key);
+    } catch(e) { value = null; }
+    if (value) return JSON.parse(value);
+    return null;
+};
+
+function persistItem(key, value) {
+    window.localStorage.setItem(key, JSON.stringify(value));
+};
