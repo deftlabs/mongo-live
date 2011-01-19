@@ -9,20 +9,8 @@
 
 <script type="text/javascript" charset="utf-8">
 <!--
-$(document).ready(function() {
-    startServerStatusPoll('localhost', 28017);
-
-    var opcountersQueryChart = createChart('opcounters - query', 'opcounters', 'query', 'opcountersQueryChart');
-    var opcountersInsertChart = createChart('opcounters - insert', 'opcounters', 'insert', 'opcountersInsertChart');
-    
-    var opcountersUpdateChart = createChart('opcounters - update', 'opcounters', 'update', 'opcountersUpdateChart');
-    var opcountersDeleteChart = createChart('opcounters - delete', 'opcounters', 'delete', 'opcountersDeleteChart');
-
-    var opcountersCommandChart = createChart('opcounters - command', 'opcounters', 'command', 'opcountersCommandChart');
-    var opcountersGetmoreChart = createChart('opcounters - getmore', 'opcounters', 'getmore', 'opcountersGetmoreChart');
-
-    var indexCountersBtreeHitsChart = createChart('indexCounters - btree.hits', 'indexCounters', 'btree.hits', 'indexCountersBtreeHitsChart');
-    var indexCountersBtreeMissesChart = createChart('indexCounters - btree.misses', 'indexCounters', 'btree.misses', 'indexCountersBtreeMissesChart');
+$(document).ready(function() { 
+    runApp(); 
 });
 //-->
 </script>
@@ -47,49 +35,52 @@ limitations under the License.
 
 <div id="header"><div id="headerContent"><div id="logo"></div></div></div>
 
-<div id="mainContainer"> 
-
-    <table id="chartContainer">
-    <tbody>
-    <tr> 
-        <td class="chartName">query</td>
-        <td><canvas id="opcountersQueryChart" width="300" height="120" class="chartCanvas"></canvas></td>
-
-        <td><canvas id="opcountersInsertChart" width="300" height="120"></canvas></td>
-        <td class="chartName">insert</td>
+<div id="mainContainer">
+    <table id="chartContainer"><tbody>
+    <tr>
+        <td class="chartName">query</td><td><canvas id="opcountersQueryChart" width="300" height="80" class="chartCanvas"></canvas></td>
+        <td><canvas id="opcountersInsertChart" width="300" height="80"></canvas></td><td class="chartName">insert</td>
     </tr>
 
     <tr>
-        <td class="chartName">update</td>
-        <td><canvas id="opcountersUpdateChart" width="300" height="120"></canvas></td>
-
-        <td><canvas id="opcountersDeleteChart" width="300" height="120"></canvas></td>
-        <td class="chartName">delete</td>
+        <td class="chartName">update</td><td><canvas id="opcountersUpdateChart" width="300" height="80"></canvas></td>
+        <td><canvas id="opcountersDeleteChart" width="300" height="80"></canvas></td><td class="chartName">delete</td>
     </tr>
 
     <tr>
-        <td class="chartName">getmore</td>
-        <td><canvas id="opcountersGetmoreChart" width="300" height="120"></canvas></td>
-
-        <td><canvas id="opcountersCommandChart" width="300" height="120"></canvas></td>
-        <td class="chartName">command</td>
+        <td class="chartName">getmore</td><td><canvas id="opcountersGetmoreChart" width="300" height="80"></canvas></td>
+        <td><canvas id="opcountersCommandChart" width="300" height="80"></canvas></td><td class="chartName">command</td>
     </tr>
 
     <tr>
-        <td class="chartName">hits</td>
-        <td><canvas id="indexCountersBtreeHitsChart" width="300" height="120"></canvas></td>
-
-        <td><canvas id="indexCountersBtreeMissesChart" width="300" height="120"></canvas></td>
-        <td class="chartName">misses</td>
+        <td class="chartName">conn</td><td><canvas id="connectionsCurrentChart" width="300" height="80"></canvas></td>
+        <td><canvas id="pageFaultsChart" width="300" height="80"></canvas></td><td class="chartName">faults</td>
     </tr>
-    </tbody>
-    </table>
+
+    <tr>
+        <td class="chartName">flushes</td><td><canvas id="flushesChart" width="300" height="80"></canvas></td>
+        <td><canvas id="lockedPercentChart" width="300" height="80"></canvas></td><td class="chartName">locked %</td>
+    </tr>
+
+    <tr>
+        <td class="chartName">idx miss %</td><td><canvas id="idxMissPercentChart" width="300" height="80"></canvas></td>
+        <td><canvas id="memMappedChart" width="300" height="80"></canvas></td><td class="chartName">mapped</td>
+    </tr>
+
+    <tr>
+        <td class="chartName">netIn</td><td><canvas id="netInChart" width="300" height="80"></canvas></td>
+        <td><canvas id="netOutChart" width="300" height="80"></canvas></td><td class="chartName">netOut</td>
+    </tr>
+
+    </tbody></table>
 </div>
 
 <div id="footer">
-    <span>Mongo Live is not associated with <a href="http://www.mongodb.org/" target="_blank">MongoDB</a>.</span>
-    <span>Released under <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License, Version 2.0</a>.</span> 
-    <span>&#169; 2011 <a href="http://deftlabs.com">Deft Labs</a></span>
+    <span>
+    &#169; 2011 <a href="http://deftlabs.com">Deft Labs</a> 
+    &bullet; Released under <a href="http://www.apache.org/licenses/LICENSE-2.0.html" target="_blank">Apache License, Version 2.0</a> 
+    &bullet; Mongo Live is not associated with <a href="http://www.mongodb.org/" target="_blank">MongoDB</a> 
+    </span>
 </div>
 
 </body>
