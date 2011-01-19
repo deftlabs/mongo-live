@@ -1,0 +1,8 @@
+
+Add options page to allow for adding remote hosts.
+
+Add drop down to allow for different host display.
+    * Make sure to disable all interval polls when changing hosts
+
+Add a brag feature for charts.
+
