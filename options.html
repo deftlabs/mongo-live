@@ -1,104 +1,19 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Mongo Live - Options</title>
-    <script type="text/javascript" src="/js/jquery-1.4.4.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/js/jquery-ui-1.8.8.custom.min.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/js/app.js" charset="utf-8"></script>
-    <link href="/themes/dark.css" rel="stylesheet" type="text/css" media="screen" />
-
-    <link rel="stylesheet" href="/themes/pepper-grinder/jquery-ui-1.8.8.custom.css" type="text/css" media="screen" />
-
-    <style type="text/css" title="currentStyle">@import "/js/datatables-1.7.5/css/hosts_table.css";</style>
-
-    <script type="text/javascript" language="javascript" src="/js/datatables-1.7.5/js/jquery.dataTables.min.js"></script>
-
+<title>Mongo Live - Options</title>
+<link href="/themes/dark.css" rel="stylesheet" type="text/css" media="screen" />
+<link rel="stylesheet" href="/themes/pepper-grinder/jquery-ui-1.8.8.custom.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/js/jquery-1.4.4.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.8.custom.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/jquery.base64-1.0.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/app.js" charset="utf-8"></script>
+<style type="text/css" title="currentStyle">@import "/js/datatables-1.7.5/css/hosts_table.css";</style>
+<script type="text/javascript" language="javascript" src="/js/datatables-1.7.5/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" charset="utf-8">
 <!--
-$(document).ready(function() { 
-    // Load the data from local storage and create the table.
-
-    $("#addHost").button();
-
-    $("#addHostSubmit").button();
-
-    $('#addHostSubmit').click(function(event) {
-        event.preventDefault();
-
-        //$('#addHostSubmit').attr('disabled', 'disabled');
-        $('#addHostInvalidHostnameMsg').hide();
-        $('#addHostInvalidHostPortMsg').hide();
-        $('#addHostDuplicateHostMsg').hide();
-
-         var hostname = $('#hostname').val();
-         var port = $('#port').val();
-         var username = $('#username').val();
-         var password = $('#password').val();
-
-         if (!hostname || hostname == '') {
-             $('#addHostInvalidHostnameMsg').show('fast'); 
-             return;
-         };
-
-        if (!isInt(port)) {
-            $('#addHostInvalidHostPortMsg').show('fast'); 
-             return;
-        }
-
-        if (!username || username == null) username = '';
-        if (!password || password == null) password = '';
-
-        port = parseInt(port, 10);
-
-        var newHost = [];
-        newHost.push(hostname);
-        newHost.push(port);
-        newHost.push(username);
-        newHost.push(password);
-
-        var hosts = getPersistedItem('hosts');
-    
-        // Look for a duplicate.
-        for (var idx in hosts) {
-            var host = hosts[idx];
-            if (host[0] == hostname && host[1] == port) {
-                $('#addHostDuplicateHostMsg').show('fast'); 
-                return;
-            }
-        }
-
-        hosts.push(newHost);
-        persistItem('hosts', hosts);
-
-        // Add the row to the table.
-        $('#hostsTable').dataTable().fnAddData(newHost);
-
-
-        $("#addHostContainer").dialog("close");
-    });
-
-    $('#addHost').click(function() {
-        $('#addHostInvalidHostnameMsg').hide();
-        $('#addHostInvalidHostPortMsg').hide();
-        $('#addHostDuplicateHostMsg').hide();
-     
-        $('#hostname').val('127.0.0.1');
-        $('#port').val(28017);
-        $('#username').val('');
-        $('#password').val('');
-
-        $("#addHostContainer").dialog({ height: 340, width: 410, modal: true, title: 'Add Host', resizable: false, stack: true, show: 'fade', hide: 'fade' });    
-    });
-
-    var hosts = getPersistedItem('hosts');
-
-    if (!hosts) {
-        hosts = [ [ '127.0.0.1', '28017', '', '' ] ]
-        persistItem('hosts', hosts);
-    }
-
-    $('#hostsTable').dataTable( { 'bProcessing': false, 'bJQueryUI': true, "aaData": hosts, 'sPaginationType': 'full_numbers' })
-
+$(document).ready(function() {
+    runOptions();
 });
 //-->
 </script>
@@ -121,7 +36,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div id="header"><div id="headerContent"><div id="logo"></div></div></div>
+<div id="header">
+    <div id="headerContent">
+        <a href="main.html"><div id="logo"></div></a>
+        <div id="options"><a href="main.html">home</a></div></a>
+    </div>
+</div>
 
 <div id="mainContainer">
 
@@ -171,7 +91,7 @@ limitations under the License.
 <br />
 
 <label for="p" id="passwordLabel" class="formLabel">Password</label>
-<input type="text" name="p" id="p" />
+<input type="password" name="p" id="p" />
 <br />
 
 <button id="addHostSubmit" type="submit">Add</button> 

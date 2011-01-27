@@ -2,13 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Mongo Live</title>
+<link rel="stylesheet" href="/themes/pepper-grinder/jquery-ui-1.8.8.custom.css" type="text/css" media="screen" />
+<link href="/themes/dark.css" rel="stylesheet" type="text/css" media="screen" />
 <script type="text/javascript" src="/js/jquery-1.4.4.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/jquery-ui-1.8.8.custom.min.js" charset="utf-8"></script>
+<script type="text/javascript" src="/js/jquery.base64-1.0.min.js" charset="utf-8"></script>
 <script type="text/javascript" language="javascript" src="/js/datatables-1.7.5/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/js/smoothie.js" charset="utf-8"></script>
 <script type="text/javascript" src="/js/app.js" charset="utf-8"></script>
-<link rel="stylesheet" href="/themes/pepper-grinder/jquery-ui-1.8.8.custom.css" type="text/css" media="screen" />
-<link href="/themes/dark.css" rel="stylesheet" type="text/css" media="screen" />
-
 <script type="text/javascript" charset="utf-8">
 <!--
 $(document).ready(function() { 
@@ -35,7 +36,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<div id="header"><div id="headerContent"><div id="logo"></div></div></div>
+<div id="header">
+    <div id="headerContent">
+        <div id="logo"></div>
+
+        <div id="hostSelectContainer">
+            <select id="hostSelect"></select>
+        </div>
+
+        <div id="options"><a href="options.html">options</a></div>
+    </div>
+</div>
 
 <div id="mainContainer">
     <table id="chartContainer"><tbody>
