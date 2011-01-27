@@ -12,15 +12,15 @@ Thie product is not affiliated with MongoDB.
 
 This product uses/includes the following open source projects:
 
-* [http://smoothiecharts.org/](Smoothie Charts) - MIT License - Copyright (c) 2010, Joe Walnes
+* [Smoothie Charts](http://smoothiecharts.org/) - MIT License - Copyright (c) 2010, Joe Walnes
 
-* [http://jquery.org](jQuery) - MIT License or GPL v2
+* [jQuery](http://jquery.org) - MIT License or GPL v2
 
-* [http://www.datatables.net/](DataTables) - GPL v2 - Copyright (c) 2007-2011, Allan Jardine 
+* [DataTables](http://www.datatables.net/) - GPL v2 - Copyright (c) 2007-2011, Allan Jardine 
 
-* Images are from [http://www.mongodb.org](MongoDB) - Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0) 
+* Images are from [MongoDB](http://www.mongodb.org) - Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0) 
 
-* [http://plugins.jquery.com/project/base64-encode-and-decode](jQuery Base64 Plugin) - Public domain or MIT/GPL 2?
+* [jQuery Base64 Plugin](http://plugins.jquery.com/project/base64-encode-and-decode) - MIT License or GPL v2
 
 Thanks to the members of 10gen who provided feedback/suggestions.
 
