@@ -20,6 +20,8 @@ This product uses/includes the following open source projects:
 
     * Images are from MongoDB http://www.mongodb.org - Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0) 
 
+    * jQuery Base64 Plugin - http://plugins.jquery.com/project/base64-encode-and-decode - Public domain?
+
 Thanks to the members of 10gen who provided feedback/suggestions.
 
 License
