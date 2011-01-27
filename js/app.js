@@ -139,6 +139,8 @@ function runOptions() {
         if (!password || password == null) newHost[3] = '';
         else newHost[3] = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
 
+        newHost.push('<span class="ui-icon ui-icon-trash"></span>');
+
         // Add the row to the table.
         $('#hostsTable').dataTable().fnAddData(newHost);
 
@@ -165,6 +167,8 @@ function runOptions() {
         if (host[3] && host[3] != null && host[3] != '') {
             host[3] = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
         }
+
+        host.push('<span class="ui-icon ui-icon-trash"></span>');
     }
 
 
@@ -304,8 +308,9 @@ function queryDb(commandUrl, username, password, success, failure, cmdError, not
             // TODO: Check for auth failure and display 
 
             success(resp);
+
         } else if (xhr.readyState == 4 && xhr.status == 404) {
-            notFound();
+            if (notFound) notFound();
         } else if (xhr.readyState == 4 && xhr.status != 200) {
             if (serverError) serverError(xhr.readyState, xhr.status);
         } else {
