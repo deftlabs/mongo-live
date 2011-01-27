@@ -53,11 +53,11 @@ limitations under the License.
             <table cellpadding="0" cellspacing="0" border="0" class="display" id="hostsTable" style="text-align: left">
             <thead>
                 <tr>
-                    <th width="50%">Hostname</th>
-                    <th width="10%">Port</th>
-                    <th width="20%">Username</th>
-                    <th width="10%">Password</th>
-                    <th width="10%">Edit</th>
+                    <th>Hostname</th>
+                    <th>Port</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>&nbsp;</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -77,6 +77,8 @@ limitations under the License.
 </div>
 
 <form id="addHostForm" action="" method="get">
+<input type="hidden" name="isAdd" id="isAdd" />
+<input type="hidden" name="hostId" id="hostId" value="" />
 <fieldset>
 
 <label for="hostname" id="hostnameLabel" class="formLabel">Hostname</label>
@@ -95,7 +97,7 @@ limitations under the License.
 <input type="password" name="p" id="p" />
 <br />
 
-<button id="addHostSubmit" type="submit">Add</button> 
+<button id="addHostSubmit" type="submit">Submit</button> 
 
 </fieldset>
 </form>
