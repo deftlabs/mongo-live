@@ -49,6 +49,8 @@ fieldset { text-align: right; }
 
 #options a { color: #F6F4CD; text-decoration: underline; font-weight: lighter; font-size: 13px; }
 
+#statusMsgContainer { display: none; /* margin: 0px auto; */ background-color: #EEE; position:absolute; width: 100%; text-align: center; top: 0px; opacity: .2; }
+
 #hostSelectContainer { display: none; position: absolute; left: 40px; top: 10px; }
 
 /* Options page */
@@ -65,8 +67,6 @@ fieldset { text-align: right; }
 #addHostFormErrorMsgs { margin-bottom: 20px; }
 
 .hostEditIcons { display: inline; }
-
-/* .hostEditIcons span { display: inline; } */
 
 .hostEditIcons .ui-icon { float: right; cursor: pointer; }
 
