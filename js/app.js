@@ -36,7 +36,7 @@ function runApp() {
         var foundSelected = false;
         for (var idx in hosts) {
             var host = hosts[idx];
-            var hostId = host[0] + ':' + host[1];
+            var hostId = assembleHostId(host);
             if (selectedHostId == hostId) foundSelected = true;
             hostOptions[idx] = new Option(hostId, hostId);
         }
@@ -98,6 +98,9 @@ function runOptions() {
          var port = $('#port').val();
          var username = $('#u').val();
          var password = $('#p').val();
+         var hostId = $('#hostId').val();
+
+         var isAdd = $('#isAdd').val();
 
          if (!hostname || hostname == '') {
              $('#addHostInvalidHostnameMsg').show('fast'); 
@@ -116,49 +119,72 @@ function runOptions() {
 
         port = parseInt(port, 10);
 
-        var newHost = [];
-        newHost.push(hostname);
-        newHost.push(port);
-        newHost.push(username);
-        newHost.push(password);
+        // We are either editing or adding.
+        if (isAdd && isAdd == 'true') {
 
-        var hosts = loadHosts();
-    
-        // Look for a duplicate.
-        for (var idx in hosts) {
-            var host = hosts[idx];
-            if (host[0] == hostname && host[1] == port) {
-                $('#addHostDuplicateHostMsg').show('fast'); 
-                return;
+            var newHost = [];
+            newHost.push(hostname);
+            newHost.push(port);
+            newHost.push(username);
+            newHost.push(password);
+
+            var hosts = loadHosts();
+
+            // Look for a duplicate.
+            for (var idx in hosts) {
+                var host = hosts[idx];
+                if (host[0] == hostname && host[1] == port) {
+                    $('#addHostDuplicateHostMsg').show('fast'); 
+                    return;
+                }
             }
+
+            hosts.push(newHost);
+            persistItem('hosts', hosts);
+
+            if (!password || password == null) newHost[3] = '';
+            else newHost[3] = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
+
+            addTableEditControls(newHost);
+
+            // Add the row to the table.
+            $('#hostsTable').dataTable().fnAddData(newHost);
+
+        } else {
+            // We are dealing with an edit.
+            var hosts = loadHosts();
+
+            for (var idx in hosts) {
+                var host = hosts[idx];
+                var hid = assembleHostId(host);
+                if (hostId == hid) {
+                    host[0] = hostname;
+                    host[1] = port;
+                    host[2] = username;
+                    host[3] = password;
+
+                    // Make sure the old host is not the selected value.
+                    var storedSelectedId = getPersistedItem('selectedHost');
+                    if (storedSelectedId == hostId) {
+                        var newSelectedHostId = assembleHostId(host);
+                        persistItem("selectedHost", newSelectedHostId);
+                        selectedHostId = newSelectedHostId;
+                        startServerStatusPoll();
+                    }
+
+                    break;
+                }
+            }
+            
+            persistItem('hosts', hosts);
+
+            window.location.reload(false);
         }
-
-        hosts.push(newHost);
-        persistItem('hosts', hosts);
-
-        if (!password || password == null) newHost[3] = '';
-        else newHost[3] = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
-
-        newHost.push('<span class="ui-icon ui-icon-trash"></span>');
-
-        // Add the row to the table.
-        $('#hostsTable').dataTable().fnAddData(newHost);
 
         $("#addHostContainer").dialog("close");
     });
 
-    $('#addHost').click(function() {
-        $('#addHostInvalidHostnameMsg').hide();
-        $('#addHostInvalidHostPortMsg').hide();
-        $('#addHostDuplicateHostMsg').hide();
-     
-        $('#hostname').val('127.0.0.1');
-        $('#port').val(28017);
-        $('#u').val('');
-        $('#p').val('');
-
-        $("#addHostContainer").dialog({ height: 340, width: 410, modal: true, title: 'Add Host', resizable: false, stack: true, show: 'fade', hide: 'fade' });    
-    });
+    $('#addHost').click(function() { launchEditHostContainer('127.0.0.1', 28017, '', '', 'Add Host', true, null); });
 
     var hosts = loadHosts();
 
@@ -168,19 +194,90 @@ function runOptions() {
             host[3] = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
         }
 
-        host.push('<span class="ui-icon ui-icon-trash"></span>');
+        var hostId = assembleHostId(host);
+
+        addTableEditControls(host);
     }
 
-
-    $('#hostsTable').dataTable( { 'bProcessing': false, 'bJQueryUI': true, "aaData": hosts, 'sPaginationType': 'full_numbers', 'iDisplayLength': 50, 'bLengthChange': false })
+    $('#hostsTable').dataTable( { 
+        'bProcessing': false, 
+        'bJQueryUI': true, 
+        "aaData": hosts, 
+        'sPaginationType': 'full_numbers', 
+        'iDisplayLength': 50, 
+        'bLengthChange': false,
+        "aoColumns": [
+            { "bSortable": true, "sWidth": "50%" },
+            { "bSortable": true, "sWidth": "10%" },
+            { "bSortable": true, "sWidth": "20%" },
+            { "bSortable": false, "sWidth": "10%" },
+            { "bSortable": false, "sWidth": "10%" }
+        ]
+    });
 };
+
+/**
+ * Edit the host.
+ */
+function editHost(hostId) {
+    var host = findHost(hostId);
+    // Get out of here if the host is missing.
+    if (host == null) { window.location.reload(false); return; }
+    launchEditHostContainer(host[0], host[1], host[2], host[3], 'Edit Host', false, hostId); 
+};
+
+/**
+ * Delete the host.
+ */
+function deleteHost(hostId) {
+    var hosts = loadHosts();
+    var newHosts = [];
+
+    for (var idx in hosts) {
+        var host = hosts[idx];
+        var hid = assembleHostId(host);
+        if (hostId == hid) {
+            // Make sure the old host is not the selected value.
+            var storedSelectedId = getPersistedItem('selectedHost');
+            if (storedSelectedId == hostId) {
+                stopServerStatusPoll();
+                removeItem('selectedHost');
+            }
+        } else { newHosts.push(host); }
+    }
+
+    persistItem('hosts', newHosts);
+
+    window.location.reload(false);
+};
+
+function launchEditHostContainer(hostname, port, username, password, title, isAdd, hostId) {
+    $('#addHostInvalidHostnameMsg').hide();
+    $('#addHostInvalidHostPortMsg').hide();
+    $('#addHostDuplicateHostMsg').hide();
+ 
+    $('#hostname').val(hostname);
+    $('#port').val(port);
+    $('#u').val(username);
+    $('#p').val(password);
+    $('#isAdd').val(isAdd);
+    
+    if (hostId && hostId != null) $('#hostId').val(hostId);
+
+    $("#addHostContainer").dialog({ height: 340, width: 410, modal: true, title: title, resizable: false, stack: true, show: 'fade', hide: 'fade' });
+};
+
+/**
+ * Stop the server status poll.
+ */
+function stopServerStatusPoll() { if (serverStatusInterval) clearInterval(serverStatusInterval); };
 
 /**
  * Start the interval lookup for server status.
  */
 function startServerStatusPoll() {
 
-    if (serverStatusInterval) clearInterval(serverStatusInterval);
+    stopServerStatusPoll();
 
     var selectedHost = parseHostId(selectedHostId);
 
@@ -345,18 +442,49 @@ function isInt(v) {
  */
 function parseHostId(hostId) { return hostId.split(":"); };
 
+/**
+ * Assemble the host id.
+ */
+function assembleHostId(host) { return baseAssembleHostId(host[0], host[1]); };
+
+/**
+ * Assemble the host based on hostname and port.
+ */
+function baseAssembleHostId(hostname, port) { return hostname + ':' + port; };
+
+/**
+ * Add the host edit controls (in the table).
+ */
+function addTableEditControls(host) {
+    var hostId = assembleHostId(host);
+
+    host.push('<div class="hostEditIcons"><span class="ui-icon ui-icon-trash" onclick="deleteHost(\'' + hostId + '\')"></span>&nbsp;&nbsp;<span class="ui-icon ui-icon-pencil" onclick="editHost(\'' + hostId + '\')"></span</div>');
+};
+ 
+/**
+ * Load the persisted hosts. Load the data from local storage and create the table (if missing).
+ */
 function loadHosts() {
-
     var hosts = getPersistedItem('hosts');
-
-    // Load the data from local storage and create the table.
-
     if (!hosts) {
         hosts = [ [ '127.0.0.1', '28017', '', '' ] ]
         persistItem('hosts', hosts);
     }
 
     return hosts;
+};
+
+function findHost(hostId) {
+
+    var hosts = loadHosts();
+
+    for (var idx in hosts) {
+        var host = hosts[idx];
+        var hid = assembleHostId(host);
+        if (hostId == hid) return host;
+    }
+
+    return null;
 };
 
 function getPersistedItem(key) {
@@ -370,3 +498,6 @@ function getPersistedItem(key) {
 function persistItem(key, value) {
     window.localStorage.setItem(key, JSON.stringify(value));
 };
+
+function removeItem(key) { window.localStorage.removeItem(key); };
+
