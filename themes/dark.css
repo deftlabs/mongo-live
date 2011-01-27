@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-body { background-color: #402817; text-align: center; font-family: helvetica,arial,sans-serif; margin: 0; padding: 0; }
+/* body { background-color: #402817; text-align: center; font-family: helvetica,arial,sans-serif; margin: 0; padding: 0; } */
+body { background-color: #402817; text-align: center; font-family: sans-serif; margin: 0; padding: 0; }
 
 .formError { display: none; color: #FF0000; }
 
@@ -24,17 +25,17 @@ fieldset { text-align: right; }
 
 #logo { background-image: url("/images/logo-mongoDB.png"); height: 90px; width: 217px; }
 
-#headerContent { width: 650px; margin: 0px auto; padding: 0px; padding-top: 10px; }
+#headerContent { width: 650px; margin: 0px auto; padding: 0px; padding-top: 10px; position: relative; }
 
 #mainContainer { width: 100%; margin: 0px auto; padding: 0px; }
 
 #chartContainer { padding: 10px; margin: 0px auto; text-align: center; }
 
-.chartName { vertical-align: middle; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); color: #F6F4CD;  margin: 0; padding: 0; }
+.chartName { vertical-align: middle; -webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); color: #F6F4CD;  margin: 0; padding: 0; font-weight: lighter; }
 
 .title { color: #EEE;  }
 
-#footer { margin-top: 0px; color: #F6F4CD; font-size: 11px; font-weight: lighter;  }
+#footer { margin-top: 0px; color: #F6F4CD; font-size: 12px; font-weight: lighter;  }
 
 #footer span { display: block; padding: 5px; }
 
@@ -43,6 +44,12 @@ fieldset { text-align: right; }
 #footer a:hover { text-decoration: underline; }
 
 #footer a:visited { color: #F6F4CD;  }
+
+#options { position: absolute; right: 20px; top: 10px; }
+
+#options a { color: #F6F4CD; text-decoration: underline; font-weight: lighter; font-size: 13px; }
+
+#hostSelectContainer { display: none; position: absolute; left: 40px; top: 10px; }
 
 /* Options page */
 
