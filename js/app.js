@@ -397,6 +397,7 @@ function queryDb(commandUrl, username, password, success, failure, cmdError, not
 
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
+            $('#statusMsgContainer').hide();
             
             var resp = JSON.parse(fixDateFields(xhr.responseText));
             
@@ -408,9 +409,14 @@ function queryDb(commandUrl, username, password, success, failure, cmdError, not
 
         } else if (xhr.readyState == 4 && xhr.status == 404) {
             if (notFound) notFound();
+        } else if (xhr.readyState == 4 && xhr.status == 0) {
+            // The client is not able to connect to the server. Display error message.
+            $('#statusMsgContainer').html('Unable to connect to server: ' + commandUrl);
+            $('#statusMsgContainer').show();
+       
         } else if (xhr.readyState == 4 && xhr.status != 200) {
             if (serverError) serverError(xhr.readyState, xhr.status);
-        } else {
+                } else {
             if (failure) failure(xhr.readyState, xhr.status);
         }
     }
