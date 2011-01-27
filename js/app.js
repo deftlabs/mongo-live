@@ -17,12 +17,48 @@ limitations under the License.
 
 var currentServerStatus = [];
 var previousServerStatus = [];
+var selectedHostId = null;
+var serverStatusInterval = null;
+
+$.base64.is_unicode = true;
 
 /**
- * Start the app.
+ * Start the app/main.
  */
 function runApp() {
-    startServerStatusPoll('localhost', 28017);
+    
+    var hosts = loadHosts();
+    selectedHostId = getPersistedItem('selectedHost');
+
+    if (hosts.length > 1) {
+
+        var hostOptions = $('#hostSelect').attr('options');
+        var foundSelected = false;
+        for (var idx in hosts) {
+            var host = hosts[idx];
+            var hostId = host[0] + ':' + host[1];
+            if (selectedHostId == hostId) foundSelected = true;
+            hostOptions[idx] = new Option(hostId, hostId);
+        }
+
+        if (foundSelected) $('#hostSelect').val(selectedHostId);
+
+        $('#hostSelect').change(function() {
+            var hostId =  $('#hostSelect option:selected').val();
+            selectedHostId = hostId;
+            persistItem("selectedHost", selectedHostId);
+            startServerStatusPoll();
+        });
+
+        $('#hostSelectContainer').show();
+
+    } else {
+        // Set the current to first record.
+        selectedHostId = hosts[0][0] + ':' + hosts[0][1];
+        persistItem("selectedHost", selectedHostId);
+    }
+
+    startServerStatusPoll();
 
     createChart('opcounters', 'query', 'opcountersQueryChart', 'rgba(57, 20, 175, 1)', 'rgba(57, 20, 175, 0)', true);
     createChart('opcounters', 'insert', 'opcountersInsertChart', 'rgba(135, 110, 215, 1)', 'rgba(135, 110, 215, 0)', true);
@@ -42,11 +78,121 @@ function runApp() {
 };
 
 /**
+ * Setup the options page.
+ */
+function runOptions() {
+
+    $("#addHost").button();
+
+    $("#addHostSubmit").button();
+
+    $('#addHostSubmit').click(function(event) {
+        event.preventDefault();
+
+        //$('#addHostSubmit').attr('disabled', 'disabled');
+        $('#addHostInvalidHostnameMsg').hide();
+        $('#addHostInvalidHostPortMsg').hide();
+        $('#addHostDuplicateHostMsg').hide();
+
+         var hostname = $('#hostname').val();
+         var port = $('#port').val();
+         var username = $('#u').val();
+         var password = $('#p').val();
+
+         if (!hostname || hostname == '') {
+             $('#addHostInvalidHostnameMsg').show('fast'); 
+             return;
+         };
+
+        if (!isInt(port)) {
+            $('#addHostInvalidHostPortMsg').show('fast'); 
+             return;
+        }
+
+        if (!username || username == null) username = '';
+        
+        if (!password || password == null) password = '';
+        else password = $.base64.encode(password);
+
+        port = parseInt(port, 10);
+
+        var newHost = [];
+        newHost.push(hostname);
+        newHost.push(port);
+        newHost.push(username);
+        newHost.push(password);
+
+        var hosts = loadHosts();
+    
+        // Look for a duplicate.
+        for (var idx in hosts) {
+            var host = hosts[idx];
+            if (host[0] == hostname && host[1] == port) {
+                $('#addHostDuplicateHostMsg').show('fast'); 
+                return;
+            }
+        }
+
+        hosts.push(newHost);
+        persistItem('hosts', hosts);
+
+        if (!password || password == null) newHost[3] = '';
+        else newHost[3] = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
+
+        // Add the row to the table.
+        $('#hostsTable').dataTable().fnAddData(newHost);
+
+        $("#addHostContainer").dialog("close");
+    });
+
+    $('#addHost').click(function() {
+        $('#addHostInvalidHostnameMsg').hide();
+        $('#addHostInvalidHostPortMsg').hide();
+        $('#addHostDuplicateHostMsg').hide();
+     
+        $('#hostname').val('127.0.0.1');
+        $('#port').val(28017);
+        $('#u').val('');
+        $('#p').val('');
+
+        $("#addHostContainer").dialog({ height: 340, width: 410, modal: true, title: 'Add Host', resizable: false, stack: true, show: 'fade', hide: 'fade' });    
+    });
+
+    var hosts = loadHosts();
+
+    for (var idx in hosts) {
+        var host = hosts[idx];
+        if (host[3] && host[3] != null && host[3] != '') {
+            host[3] = '&#149;&#149;&#149;&#149;&#149;&#149;&#149;&#149;';
+        }
+    }
+
+
+    $('#hostsTable').dataTable( { 'bProcessing': false, 'bJQueryUI': true, "aaData": hosts, 'sPaginationType': 'full_numbers', 'iDisplayLength': 50, 'bLengthChange': false })
+};
+
+/**
  * Start the interval lookup for server status.
  */
-function startServerStatusPoll(mongoHost, mongoPort) {
-    setInterval(function() {
-        queryServerStatus(mongoHost, mongoPort, function(response) { 
+function startServerStatusPoll() {
+
+    if (serverStatusInterval) clearInterval(serverStatusInterval);
+
+    var selectedHost = parseHostId(selectedHostId);
+
+    var hosts = loadHosts();
+
+    var host = null;
+
+    for (var idx in hosts) {
+        host = hosts[idx];
+        if (host[0] == selectedHost[0] && host[1] == selectedHost[1]) break;
+    }
+
+    // TODO: What happens if the host is null?
+
+    serverStatusInterval = setInterval(function() {
+        queryServerStatus(host, function(response) { 
             previousServerStatus = currentServerStatus;
             currentServerStatus = response;
         });
@@ -130,7 +276,7 @@ function createPercentChart(divId, lineColor, fillColor, group1, identity1, grou
  */
 function createChart(group, identity, divId, lineColor, fillColor, isCounter) {
     var series = new TimeSeries();
-
+    
     setInterval(function() { addServerStatusValueToSeries(series, group, identity, isCounter); }, 1000);
 
     var chart = new SmoothieChart({ millisPerPixel: 20, grid: { strokeStyle: '#555555', fillStyle: '#402817',  lineWidth: 1, millisPerLine: 1000, verticalSections: 4 }});
@@ -138,20 +284,24 @@ function createChart(group, identity, divId, lineColor, fillColor, isCounter) {
     chart.streamTo(document.getElementById(divId), 1000);
 };
 
-
-function queryServerStatus(mongoHost, mongoPort, success, failure, cmdError, notFound, serverError) {
-    queryDb(('http://' + mongoHost + ':' + mongoPort + '/serverStatus'), success, failure, cmdError, notFound, serverError);
+function queryServerStatus(host, success, failure, cmdError, notFound, serverError) {
+    queryDb(('http://' + host[0] + ':' + host[1] + '/serverStatus'), host[2], host[3], success, failure, cmdError, notFound, serverError);
 };
 
-function queryDb(commandUrl, success, failure, cmdError, notFound, serverError) {
+function queryDb(commandUrl, username, password, success, failure, cmdError, notFound, serverError) {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", commandUrl, true);
+    if (username && username != null && username != '') {
+        xhr.open("GET", commandUrl, true, username, $.base64.decode(password));
+    } else { xhr.open("GET", commandUrl, true); }
+
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             
             var resp = JSON.parse(fixDateFields(xhr.responseText));
             
             // TODO: Check for mongo error state in response json
+
+            // TODO: Check for auth failure and display 
 
             success(resp);
         } else if (xhr.readyState == 4 && xhr.status == 404) {
@@ -183,6 +333,25 @@ function fixDateFields(resp) { return resp.replace(/Date\( (\d+) \)/g, "0"); };
 function isInt(v) {
     var regex = /(^-?\d\d*$)/;
     return regex.test(v);
+};
+
+/**
+ * Parse the host id.
+ */
+function parseHostId(hostId) { return hostId.split(":"); };
+
+function loadHosts() {
+
+    var hosts = getPersistedItem('hosts');
+
+    // Load the data from local storage and create the table.
+
+    if (!hosts) {
+        hosts = [ [ '127.0.0.1', '28017', '', '' ] ]
+        persistItem('hosts', hosts);
+    }
+
+    return hosts;
 };
 
 function getPersistedItem(key) {
