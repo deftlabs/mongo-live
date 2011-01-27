@@ -64,5 +64,9 @@ fieldset { text-align: right; }
 
 #addHostFormErrorMsgs { margin-bottom: 20px; }
 
+.hostEditIcons { display: inline; }
 
+/* .hostEditIcons span { display: inline; } */
+
+.hostEditIcons .ui-icon { float: right; cursor: pointer; }
 
