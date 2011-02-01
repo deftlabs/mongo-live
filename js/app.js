@@ -53,9 +53,16 @@ function runApp() {
         $('#hostSelectContainer').show();
 
     } else {
-        // Set the current to first record.
-        selectedHostId = hosts[0][0] + ':' + hosts[0][1];
-        persistItem("selectedHost", selectedHostId);
+
+        if (hosts.length == 1) {
+            // Set the current to first record.
+            selectedHostId = hosts[0][0] + ':' + hosts[0][1];
+            persistItem("selectedHost", selectedHostId);
+        } else {
+            // No hosts in the system. 
+            $('#statusMsgContainer').html('No servers configured. Add a server in options.');
+            $('#statusMsgContainer').show();
+        }
     }
 
     startServerStatusPoll();
@@ -264,7 +271,7 @@ function launchEditHostContainer(hostname, port, username, password, title, isAd
     
     if (hostId && hostId != null) $('#hostId').val(hostId);
 
-    $("#addHostContainer").dialog({ height: 340, width: 410, modal: true, title: title, resizable: false, stack: true, show: 'fade', hide: 'fade' });
+    $("#addHostContainer").dialog({ height: 390, width: 410, modal: true, title: title, resizable: false, stack: true, show: 'fade', hide: 'fade' });
 };
 
 /**
@@ -279,10 +286,20 @@ function startServerStatusPoll() {
 
     stopServerStatusPoll();
 
-    var selectedHost = parseHostId(selectedHostId);
-
     var hosts = loadHosts();
 
+    if (!selectedHostId) {
+        for (var idx in hosts) {
+            selectedHostId = assembleHostId(hosts[idx]);
+            persistItem("selectedHost", selectedHostId);
+            break;
+        }
+    }
+
+    if (!selectedHostId) return;
+
+    var selectedHost = parseHostId(selectedHostId);
+    
     var host = null;
 
     for (var idx in hosts) {
@@ -290,7 +307,7 @@ function startServerStatusPoll() {
         if (host[0] == selectedHost[0] && host[1] == selectedHost[1]) break;
     }
 
-    // TODO: What happens if the host is null?
+    if (host == null) return; 
 
     serverStatusInterval = setInterval(function() {
         queryServerStatus(host, function(response) { 
@@ -390,35 +407,35 @@ function queryServerStatus(host, success, failure, cmdError, notFound, serverErr
 };
 
 function queryDb(commandUrl, username, password, success, failure, cmdError, notFound, serverError) {
+
     var xhr = new XMLHttpRequest();
     if (username && username != null && username != '') {
         xhr.open("GET", commandUrl, true, username, $.base64.decode(password));
     } else { xhr.open("GET", commandUrl, true); }
 
     xhr.onreadystatechange = function() {
+
         if (xhr.readyState == 4 && xhr.status == 200) {
+            authProblem = false;
             $('#statusMsgContainer').hide();
             
             var resp = JSON.parse(fixDateFields(xhr.responseText));
             
             // TODO: Check for mongo error state in response json
 
-            // TODO: Check for auth failure and display 
-
             success(resp);
-
         } else if (xhr.readyState == 4 && xhr.status == 404) {
             if (notFound) notFound();
+
         } else if (xhr.readyState == 4 && xhr.status == 0) {
             // The client is not able to connect to the server. Display error message.
             $('#statusMsgContainer').html('Unable to connect to server: ' + commandUrl);
             $('#statusMsgContainer').show();
-       
+
         } else if (xhr.readyState == 4 && xhr.status != 200) {
             if (serverError) serverError(xhr.readyState, xhr.status);
-                } else {
             if (failure) failure(xhr.readyState, xhr.status);
-        }
+        } 
     }
     xhr.send();
 };
